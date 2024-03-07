@@ -3,7 +3,11 @@ import GoogleProvider from 'next-auth/providers/google'
 import User from '@/models/user'
 import { connectToDB } from '@/utils/database';
 
-
+interface ProfileType {
+    email: string,
+    name: string,
+    picture: string
+}
 
 const handler = NextAuth({
 
@@ -26,7 +30,7 @@ const handler = NextAuth({
 
             return session;
         },
-        async signIn ({ profile } : { profile: Profile }) {
+        async signIn ({ profile } : ProfileType) {
             try {
                 await connectToDB()
 
@@ -40,14 +44,14 @@ const handler = NextAuth({
                     await User.create({
                         email: profile.email,
                         username: profile?.name?.replace(" ", "").toLowerCase(),
-                        image: profile.image
+                        image: profile.picture
                     })
                 }
                 console.log(userExists);
 
                 return true
             } catch (error) {
-                console.error(error)
+                console.error(error.message)
                 return false
             }
         }
