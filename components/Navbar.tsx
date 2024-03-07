@@ -1,13 +1,14 @@
 "use client";
 
 import { BuiltInProviderType } from "next-auth/providers/index";
-import { ClientSafeProvider, LiteralUnion, getProviders, signIn, signOut } from "next-auth/react";
+import {ClientSafeProvider, LiteralUnion, getProviders, signIn, signOut, useSession} from "next-auth/react";
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect } from "react";
 
 const Nav = () => {
-  const isUserLoggedIn = true;
+  // const isUserLoggedIn = false;
+    const { data: session } = useSession()
   const [providers, setProviders] = useState<Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null>(null);
   const [toggleDropDown, setToggleDropDown] = useState(false)
 
@@ -34,9 +35,11 @@ const Nav = () => {
           <p className="logo_text">Promptopia</p>
 
       </Link>
+
+
       {/* Desktop Navigation */}
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href='/create-prompt' className="black_btn">
               Create Post
@@ -49,7 +52,7 @@ const Nav = () => {
 
             <Link href='/profile'>
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 width={37}
                 height={37}
                 className="rounded-full"
@@ -67,6 +70,7 @@ const Nav = () => {
                 onClick={() => signIn(provider.id)}
                 className="black_btn"
               >
+                Sign in
               </button>
             ))}
           </>
@@ -75,10 +79,10 @@ const Nav = () => {
 
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex">
             <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 width={37}
                 height={37}
                 className="rounded-full"
@@ -125,6 +129,7 @@ const Nav = () => {
                 onClick={() => signIn(provider.id)}
                 className="black_btn"
               >
+                Sign In
               </button>
             ))}
           </>
