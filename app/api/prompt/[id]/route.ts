@@ -3,7 +3,7 @@ import Prompt from "@/models/prompt";
 
 
 // GET (read)
-export const GET = async (request, { params }) => {
+export const GET = async (request: Request, { params } : { params: { id: string } }) => {
     try {
         await connectToDB();
 
@@ -19,7 +19,7 @@ export const GET = async (request, { params }) => {
 }
 
 // PATCH (delete)
-export const PATCH = async (request, { params }) => {
+export const PATCH = async (request: Request, { params } : { params: { id: string } }) => {
     const { prompt, tag } = await request.json()
 
     try {
@@ -43,7 +43,7 @@ export const PATCH = async (request, { params }) => {
 }
 
 // DELETE (delete
-export const DELETE = async (request, { params }) => {
+export const DELETE = async (request: Request, { params } : { params: { id: string } }) => {
     try {
         await connectToDB();
 

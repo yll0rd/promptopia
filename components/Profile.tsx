@@ -1,6 +1,15 @@
 import PromptCard from "./PromptCard";
+import {PromptType} from "@/models/prompt";
 
-const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
+interface ProfileProps {
+    name: string,
+    desc: string,
+    data: PromptType[],
+    handleEdit: (value: PromptType) => void,
+    handleDelete: (value: PromptType) => void,
+}
+
+const Profile = ({ name, desc, data, handleEdit, handleDelete } : ProfileProps) => {
     return (
         <section className='w-full'>
             <h1 className='head_text text-left'>

@@ -1,6 +1,14 @@
-import { Schema, model, models } from "mongoose";
+import {Schema, models, model, Document, Model} from "mongoose";
+
+export interface UserType extends Document{
+    id?: number;
+    email: string;
+    username: string;
+    image: string;
+}
 
 const UserSchema = new Schema({
+    id: Number,
     email: {
         type: String,
         unique: [true, "Email already exists!"],
@@ -16,6 +24,6 @@ const UserSchema = new Schema({
     },
 })
 
-const User = models.User || model("User", UserSchema)
+const User = models.User as Model<UserType> || model<UserType>("User", UserSchema)
 
 export default User;

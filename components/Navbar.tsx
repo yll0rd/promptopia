@@ -1,10 +1,11 @@
 "use client";
 
-import { BuiltInProviderType } from "next-auth/providers/index";
-import {ClientSafeProvider, LiteralUnion, getProviders, signIn, signOut, useSession} from "next-auth/react";
+import {ClientSafeProvider, getProviders, LiteralUnion, signIn, signOut, useSession} from "next-auth/react";
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {type BuiltInProviderType} from "next-auth/providers/index";
 
 const Nav = () => {
   // const isUserLoggedIn = false;
@@ -14,12 +15,10 @@ const Nav = () => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      const response = await getProviders();
-
-      setProviders(response)
+        return await getProviders()
     }
 
-    fetchProviders()
+    fetchProviders().then(setProviders)
   }, [])
 
   return (
@@ -41,7 +40,7 @@ const Nav = () => {
       <div className="sm:flex hidden">
         {session?.user ? (
           <div className="flex gap-3 md:gap-5">
-            <Link href='/create-prompt' className="black_btn">
+            <Link href={'/create-prompt'} className="black_btn">
               Create Post
             </Link>
 
@@ -50,14 +49,18 @@ const Nav = () => {
             </button>
 
 
-            <Link href='/profile'>
-              <Image
-                src={session?.user.image}
-                width={37}
-                height={37}
-                className="rounded-full"
-                alt="profile" 
-              />
+            <Link href={'/profile'}>
+              {/*<Image*/}
+              {/*  src={session?.user.image}*/}
+              {/*  width={37}*/}
+              {/*  height={37}*/}
+              {/*  className="rounded-full"*/}
+              {/*  alt="profile" */}
+              {/*/>*/}
+                <Avatar className="w-[37px] h-[37px]">
+                    <AvatarImage src={session.user.image as string} />
+                    <AvatarFallback>{session.user.name?.slice(0,2)}</AvatarFallback>
+                </Avatar>
             </Link>
 
           </div>
@@ -81,26 +84,30 @@ const Nav = () => {
       <div className="sm:hidden flex relative">
         {session?.user ? (
           <div className="flex">
-            <Image
-                src={session?.user.image}
-                width={37}
-                height={37}
-                className="rounded-full"
-                alt="profile"
-                onClick={() => setToggleDropDown(prev => !prev)}
-              />
+            {/*<Image*/}
+            {/*    src={session?.user.image}*/}
+            {/*    width={37}*/}
+            {/*    height={37}*/}
+            {/*    className="rounded-full"*/}
+            {/*    alt="profile"*/}
+            {/*    onClick={() => setToggleDropDown(prev => !prev)}*/}
+            {/*  />*/}
+              <Avatar className="w-[37px] h-[37px]" onClick={() => setToggleDropDown(prev => !prev)}>
+                  <AvatarImage src={session.user.image as string} />
+                  <AvatarFallback>{session.user.name?.slice(0,2)}</AvatarFallback>
+              </Avatar>
             
             {toggleDropDown && (
               <div className="dropdown">
                 <Link
-                  href="/profile"
+                  href={"/profile"}
                   className="dropdown_link"
                   onClick={() => setToggleDropDown(false)}
                 >
                   My Profile
                 </Link>
                 <Link
-                  href="/create-prompt"
+                  href={"/create-prompt"}
                   className="dropdown_link"
                   onClick={() => setToggleDropDown(false)}
                 >

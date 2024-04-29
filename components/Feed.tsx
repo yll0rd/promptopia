@@ -1,9 +1,10 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import PromptCard from "@/components/PromptCard";
+import {PromptType} from "@/models/prompt";
 
-const PromptCardList = ({data, handleTagClick}) => {
+const PromptCardList = ({data, handleTagClick} : { data: PromptType[], handleTagClick: (value?: any) => void }) => {
     console.log(data)
     return (
         <div className="mt-16 prompt_layout">
@@ -22,9 +23,9 @@ const PromptCardList = ({data, handleTagClick}) => {
 
 const Feed = () => {
     const [searchText, setSearchText] = useState('');
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState<PromptType[]>([])
 
-    const handleSearchChange = (e) => {}
+    const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {}
 
     useEffect(() => {
         const fetchPosts = async () => {

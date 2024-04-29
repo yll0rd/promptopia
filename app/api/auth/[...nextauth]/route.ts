@@ -1,13 +1,9 @@
-import NextAuth, {Profile, Session} from 'next-auth'
+import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import User from '@/models/user'
 import { connectToDB } from '@/utils/database';
+import {ProfileType, SessionUserType} from '@/lib/types';
 
-interface ProfileType {
-    email: string,
-    name: string,
-    picture: string
-}
 
 const handler = NextAuth({
 
@@ -19,38 +15,41 @@ const handler = NextAuth({
     ],
 
     callbacks: {
-        async session ({session}: {
-            session: Session
-        }) {
-            const sessionUser = await User.findOne({
-                email: session?.user?.email
-            })
+        session: async function ({session}) {
+            const SESSION = session as SessionUserType;
+            if (SESSION.user) {
+                const sessionUser = await User.findOne({
+                    email: SESSION.user.email as string
+                });
 
-            session.user.id = sessionUser._id.toString()
+                if (sessionUser)
+                    SESSION.user.id = sessionUser._id.toString();
+            }
 
-            return session;
+            return SESSION;
         },
-        async signIn ({ profile } : ProfileType) {
+        async signIn ({ profile }) {
+            const PROFILE = profile as ProfileType;
             try {
                 await connectToDB()
 
                 // check if a user already exists
                 const userExists = await User.findOne({
-                    email: profile.email
+                    email: PROFILE?.email
                 })
 
                 // if not, create a new user
                 if (!userExists) {
                     await User.create({
-                        email: profile.email,
-                        username: profile?.name?.replace(" ", "").toLowerCase(),
-                        image: profile.picture
+                        email: PROFILE?.email,
+                        username: PROFILE?.name?.replace(" ", "").toLowerCase(),
+                        image: PROFILE?.picture
                     })
                 }
-                console.log(userExists);
 
                 return true
-            } catch (error) {
+            } catch (error: any) {
+                console.log("Error")
                 console.error(error.message)
                 return false
             }
